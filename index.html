@@ -183,6 +183,40 @@
         </div>
     </div>
 
+    <div id="payment-modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                                Instructions de Paiement
+                            </h3>
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <p class="text-sm text-gray-600 mb-2">Pour finaliser votre commande, veuillez effectuer un virement bancaire avec les informations suivantes :</p>
+                                <div class="space-y-2">
+                                    <p class="font-mono bg-white p-2 rounded border select-all">IBAN: IT55X3608003200000000020604</p>
+                                    <p class="font-mono bg-white p-2 rounded border select-all">BIC: NIPTITP1XXX</p>
+                                    <p class="font-bold mt-2">Montant: <span id="payment-amount"></span></p>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-4">Important: Incluez votre numéro de commande <span id="order-reference" class="font-bold"></span> dans la référence du virement.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="closePaymentModal()">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-gray-800 text-white py-4 text-center rounded-md">
         <p>© 2024 Mon Superbe Site d'E-commerce. Tous droits réservés.</p>
     </footer>
@@ -390,12 +424,32 @@
 
         function checkout() {
             if (cart.length > 0) {
-                // Simulate checkout process (replace with actual backend integration)
-                alert(`Commande confirmée pour un total de ${cartTotalElement.textContent}! Merci pour votre achat.`);
+                const orderReference = generateOrderReference();
+                const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+                
+                document.getElementById('payment-amount').textContent = `${total.toFixed(2)} €`;
+                document.getElementById('order-reference').textContent = orderReference;
+                
+                togglePaymentModal();
                 clearCart();
             } else {
                 alert('Votre panier est vide !');
             }
+        }
+
+        function generateOrderReference() {
+            const date = new Date();
+            const random = Math.floor(Math.random() * 10000);
+            return `CMD${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${random}`;
+        }
+
+        function togglePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
         }
 
         function saveCart() {
