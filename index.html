@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Superbe Site d'E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .animate-slide-in-left {
+            animation: slideInLeft 0.5s ease-in-out;
+        }
+        .animate-slide-in-right {
+            animation: slideInRight 0.5s ease-in-out;
+        }
+        .animate-bounce {
+            animation: bounce 2s infinite;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white py-4 flex justify-between items-center shadow-md sticky top-0 z-10 rounded-md">
+        <div class="logo text-xl font-bold ml-4 animate-bounce">Mon E-commerce</div>
+        <nav class="mr-4">
+            <ul class="flex space-x-4">
+                <li><a href="#home" class="hover:text-blue-300 no-underline">Accueil</a></li>
+                <li><a href="#products" class="hover:text-blue-300 no-underline">Produits</a></li>
+                <li><a href="#about" class="hover:text-blue-300 no-underline">À Propos</a></li>
+                <li><a href="#contact" class="hover:text-blue-300 no-underline">Contact</a></li>
+                <li>
+                    <a href="#cart" class="flex items-center hover:text-blue-300 no-underline">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        <span class="ml-1" id="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="container mx-auto py-10 flex flex-col md:flex-row items-center justify-around animate-fade-in">
+        <div class="text-center md:text-left">
+            <h1 class="text-3xl font-bold text-blue-700 mb-4">Bienvenue sur Mon E-commerce</h1>
+            <p class="text-gray-600 mb-8">Votre destination pour les meilleurs produits en ligne.</p>
+            <button onclick="window.location.href='#products'" class="bg-green-500 text-white py-3 px-6 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+                Découvrez Nos Produits
+            </button>
+        </div>
+        <div class="mt-8 md:mt-0">
+            <img src="https://placehold.co/600x400/EEE/31343C" alt="Image d'accueil" class="rounded-lg shadow-lg animate-slide-in-right">
+        </div>
+    </section>
+
+    <section id="products" class="container mx-auto py-10">
+        <h2 class="text-2xl font-bold text-center text-blue-700 mb-8 animate-fade-in">Nos Produits Vedettes</h2>
+        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </section>
+
+    <section id="product-details" class="container mx-auto py-10 hidden">
+        <h2 class="text-2xl font-bold text-center text-blue-700 mb-8 animate-fade-in">Détails du Produit</h2>
+        <div id="product-details-content" class="bg-white rounded-lg shadow-md p-6">
+        </div>
+    </section>
+
+    <section id="about" class="bg-blue-100 py-10 rounded-md">
+        <div class="container mx-auto text-center animate-fade-in">
+            <h2 class="text-2xl font-bold text-blue-700 mb-8">À Propos de Nous</h2>
+            <p class="text-gray-700 text-lg">
+                Nous sommes une équipe passionnée dédiée à vous offrir la meilleure expérience d'achat en ligne.
+                Avec des années d'expérience dans l'industrie, nous comprenons vos besoins et nous nous efforçons
+                de vous fournir des produits de qualité supérieure et un service client exceptionnel.
+            </p>
+            <div class="mt-8 flex justify-center">
+                <img src="https://placehold.co/400x300/EEE/31343C" alt="À propos de nous" class="rounded-lg shadow-lg animate-slide-in-left">
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="container mx-auto py-10">
+        <h2 class="text-2xl font-bold text-center text-blue-700 mb-8 animate-fade-in">Contactez-Nous</h2>
+        <div class="bg-white rounded-lg shadow-md p-8 max-w-md mx-auto animate-slide-in-right">
+            <form id="contact-form" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nom:</label>
+                    <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <div id="name-error" class="text-red-500 text-xs italic" style="display: none;"></div>
+                </div>
+                <div>
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <div id="email-error" class="text-red-500 text-xs italic" style="display: none;"></div>
+                </div>
+                <div>
+                    <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message:</label>
+                    <textarea id="message" name="message" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32 resize-y" required></textarea>
+                    <div id="message-error" class="text-red-500 text-xs italic" style="display: none;"></div>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 w-full">
+                    Envoyer Message
+                </button>
+            </form>
+            <div id="message-sent" class="mt-6 text-green-600 text-center font-semibold" style="display: none;">
+                Message envoyé avec succès!
+            </div>
+        </div>
+    </section>
+
+    <div id="cart-modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h2 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Votre Panier
+                            </h2>
+                            <div id="cart-items" class="mt-2">
+                                </div>
+                            <div id="cart-total" class="mt-4 font-bold text-xl text-right">
+                                Total: 0.00 €
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="clearCart()">
+                        Vider le panier
+                    </button>
+                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="toggleCartModal()">
+                        Continuer mes achats
+                    </button>
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="checkout()">
+                        Commander
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-4 text-center rounded-md">
+        <p>© 2024 Mon Superbe Site d'E-commerce. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        const products = [
+            { 
+                id: 1, 
+                name: 'Drone Dji Mini 4 Pro Fly More Combo avec radiocommande Blanc', 
+                price: 999.99, 
+                description: 'Réalisez des prouesses avec Mini DJI Mini 4 Pro constitue notre mini drone caméra le plus perfectionné à ce jour. Il intègre de puissantes capacités d\'imagerie, une détection d\'obstacles omnidirectionnelle, ActiveTrack 360° avec un nouveau mode de suivi, et une transmission vidéo FHD sur 20 km, pour le plus grand plaisir des pros comme des débutants.',
+                image: 'https://static.fnac-static.com/multimedia/Images/FR/MDM/c1/b1/52/22196673/3756-1/tsp20250314191927/Drone-Dji-Mini-4-Pro-Fly-More-Combo-avec-radiocommande-Blanc.jpg',
+                accessories: ['Batterie de Vol Intelligente : 2 590 mAh', 'Batterie de Vol Intelligente Plus : 3 850 mAh'],
+                customizations: [
+                    'Taille drone plié: 148 x 94 x 64 mm',
+                    'Taille drone déplié: 298 x 373 x 101 mm',
+                    'Couleur: Blanc',
+                    'Télécommande avec écran intégré'
+                ]
+            },
+            { id: 2, name: 'Produit 2', price: 19.99, description: 'Description du produit 2', image: 'https://placehold.co/300x200/EEE/31343C', accessories: ['Accessoire X'], customizations: ['Taille S', 'Taille M', 'Taille L'] },
+            { id: 3, name: 'Produit 3', price: 34.50, description: 'Description du produit 3', image: 'https://placehold.co/300x200/EEE/31343C', accessories: [], customizations: ['Design A', 'Design B', 'Design C'] },
+            { id: 4, name: 'Produit 4', price: 42.00, description: 'Description du produit 4', image: 'https://placehold.co/300x200/EEE/31343C', accessories: ['Accessoire 1', 'Accessoire 2', 'Accessoire 3'], customizations: [] },
+            { id: 5, name: 'Produit 5', price: 15.50, description: 'Description du produit 5', image: 'https://placehold.co/300x200/EEE/31343C', accessories: ['Accessoire Y', 'Accessoire Z'], customizations: ['Rouge', 'Vert', 'Bleu'] },
+            { id: 6, name: 'Produit 6', price: 29.99, description: 'Description du produit 6', image: 'https://placehold.co/300x200/EEE/31343C', accessories: [], customizations: ['Option 1', 'Option 2'] },
+        ];
+
+        const productList = document.getElementById('product-list');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalElement = document.getElementById('cart-total');
+        const cartCountElement = document.getElementById('cart-count');
+        const cartModal = document.getElementById('cart-modal');
+        const contactForm = document.getElementById('contact-form');
+        const messageSent = document.getElementById('message-sent');
+        const productDetailsSection = document.getElementById('product-details');
+        const productDetailsContent = document.getElementById('product-details-content');
+
+        let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+        function displayProducts() {
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'p-4', 'flex', 'flex-col', 'transition-transform', 'hover:scale-105', 'animate-fade-in');
+                productCard.innerHTML = `
+                    <div class="relative group">
+                        <img src="${product.image}" alt="${product.name}" class="rounded-md h-48 w-full object-cover mb-4">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md flex items-center justify-center">
+                            <button 
+                                class="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-700"
+                                hx-get="/product/${product.id}"
+                                hx-target="#product-details-content"
+                                hx-trigger="click"
+                                onclick="showProductDetails(${product.id})"
+                            >
+                                Voir Détails
+                            </button>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">${product.name}</h3>
+                    <p class="text-gray-600 mb-2 line-clamp-2">${product.description}</p>
+                    <p class="text-lg font-bold text-green-600 mb-4">${product.price.toFixed(2)} €</p>
+                    <button 
+                        class="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 mt-auto"
+                        onclick="addToCart(${product.id})"
+                    >
+                        Ajouter au panier
+                    </button>
+                `;
+                productList.appendChild(productCard);
+            });
+        }
+
+        // Assurez-vous que la fonction est appelée au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            displayProducts();
+            updateCartCount();
+        });
+
+        function showProductDetails(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const detailsHTML = `
+                    <div class="container mx-auto py-10 flex flex-col md:flex-row items-start justify-center gap-8 animate-fade-in">
+                        <div class="md:w-1/2">
+                            <img src="${product.image}" alt="${product.name}" class="rounded-lg shadow-lg w-full">
+                        </div>
+                        <div class="md:w-1/2">
+                            <h1 class="text-3xl font-bold text-blue-700 mb-4">${product.name}</h1>
+                            <p class="text-gray-600 text-lg mb-4">${product.description}</p>
+                            <p class="text-2xl font-bold text-green-600 mb-6">Prix: ${product.price.toFixed(2)} €</p>
+
+                            ${product.accessories && product.accessories.length > 0 ? `
+                                <div class="mb-6">
+                                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Accessoires:</h3>
+                                    <ul class="list-disc list-inside">
+                                        ${product.accessories.map(acc => `<li>${acc}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            ${product.customizations && product.customizations.length > 0 ? `
+                                <div class="mb-6">
+                                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Personnalisations:</h3>
+                                    <ul class="list-disc list-inside">
+                                        ${product.customizations.map(cust => `<li>${cust}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            <button class="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" onclick="addToCart(${product.id})">
+                                Ajouter au panier
+                            </button>
+                            <button class="mt-4 bg-gray-300 text-gray-700 py-3 px-6 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75" onclick="hideProductDetails()">
+                                Retour aux produits
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productDetailsContent.innerHTML = detailsHTML;
+                productDetailsSection.classList.remove('hidden');
+                document.getElementById("products").classList.add('hidden');
+
+            } else {
+                productDetailsContent.innerHTML = '<p class="text-red-500 text-center py-8">Produit non trouvé.</p>';
+            }
+        }
+
+        function hideProductDetails() {
+            productDetailsSection.classList.add('hidden');
+            document.getElementById("products").classList.remove('hidden');
+            productDetailsContent.innerHTML = '';
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const existingItem = cart.find(item => item.product.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ product, quantity: 1 });
+                }
+                saveCart();
+                updateCartCount();
+                displayCartItems();
+                showToast(`${product.name} a été ajouté au panier !`);
+            }
+        }
+
+        function displayCartItems() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Votre panier est vide.</p>';
+                cartTotalElement.textContent = 'Total: 0.00 €';
+                return;
+            }
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('flex', 'justify-between', 'items-center', 'py-2', 'border-b', 'border-gray-200');
+                cartItem.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold text-blue-700">${item.product.name}</h4>
+                        <p class="text-gray-600 text-sm">Quantité: ${item.quantity}</p>
+                    </div>
+                    <p class="text-lg font-bold text-green-600">${(item.product.price * item.quantity).toFixed(2)} €</p>
+                     <button class="text-red-500 hover:text-red-700 focus:outline-none" onclick="removeFromCart(${item.product.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    </button>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+                total += item.product.price * item.quantity;
+            });
+            cartTotalElement.textContent = `Total: ${total.toFixed(2)} €`;
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.product.id !== productId);
+            saveCart();
+            updateCartCount();
+            displayCartItems();
+            showToast('Produit retiré du panier !');
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+            updateCartCount();
+            displayCartItems();
+            showToast('Panier vidé !');
+        }
+
+        function updateCartCount() {
+            let count = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCountElement.textContent = count;
+        }
+
+        function toggleCartModal() {
+            cartModal.classList.toggle('hidden');
+            if (!cartModal.classList.contains('hidden')) {
+                displayCartItems();
+            }
+        }
+
+        function checkout() {
+            if (cart.length > 0) {
+                // Simulate checkout process (replace with actual backend integration)
+                alert(`Commande confirmée pour un total de ${cartTotalElement.textContent}! Merci pour votre achat.`);
+                clearCart();
+            } else {
+                alert('Votre panier est vide !');
+            }
+        }
+
+        function saveCart() {
+            sessionStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.classList.add('fixed', 'bottom-4', 'right-4', 'bg-green-500', 'text-white', 'py-2', 'px-4', 'rounded-md', 'shadow-lg', 'opacity-0', 'transition-opacity', 'duration-300', 'animate-slide-in-right');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-x-4');
+toast.classList.add('opacity-100', 'translate-x-0');
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-x-0');
+                    toast.classList.add('opacity-0', 'translate-x-4');
+                    setTimeout(() => toast.remove(), 300); // Remove after the fade out
+                }, 2000); // Display for 2 seconds
+            }, 10); // Small delay to ensure добавление класса срабатывает
+        }
+
+        // Form validation
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let hasErrors = false;
+
+            const nameInput = document.getElementById('name');
+            const nameError = document.getElementById('name-error');
+            if (nameInput.value.trim() === '') {
+                nameError.textContent = 'Veuillez entrer votre nom.';
+                nameError.style.display = 'block';
+                hasErrors = true;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+            if (emailInput.value.trim() === '') {
+                emailError.textContent = 'Veuillez entrer votre email.';
+                emailError.style.display = 'block';
+                hasErrors = true;
+            } else if (!emailRegex.test(emailInput.value.trim())) {
+                emailError.textContent = 'Veuillez entrer un email valide.';
+                emailError.style.display = 'block';
+                hasErrors = true;
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            const messageInput = document.getElementById('message');
+            const messageError = document.getElementById('message-error');
+            if (messageInput.value.trim() === '') {
+                messageError.textContent = 'Veuillez entrer votre message.';
+                messageError.style.display = 'block';
+                hasErrors = true;
+            } else {
+                messageError.style.display = 'none';
+            }
+
+            if (!hasErrors) {
+                // Simulate form submission (replace with actual backend submission)
+                console.log('Form submitted:', {
+                    name: nameInput.value,
+                    email: emailInput.value,
+                    message: messageInput.value
+                });
+                messageSent.style.display = 'block';
+                contactForm.reset();
+                setTimeout(() => {
+                    messageSent.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Initial setup
+        window.onload = function() {
+            console.log("Chargement de la page");
+            displayProducts();
+            updateCartCount();
+            console.log("Produits affichés");
+        }
+
+        // Make cart modal accessible via the cart icon
+        document.querySelector('a[href="#cart"]').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent the default anchor behavior
+            toggleCartModal(); // Open the cart modal
+        });
+    </script>
+</body>
+</html>
