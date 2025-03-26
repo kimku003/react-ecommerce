@@ -61,7 +61,7 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <header class="bg-blue-500 text-white py-4 flex justify-between items-center shadow-md sticky top-0 z-10 rounded-md">
+    <header class="bg-blue-500 text-white py-4 flex justify-between items-center lg:items-center shadow-md sticky top-0 z-10 rounded-md">
         <div class="logo text-xl font-bold ml-4 animate-bounce">Mon E-commerce</div>
         <button id="menu-toggle" class="mr-4 md:hidden focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
@@ -69,8 +69,8 @@
             </svg>
         </button>
         <nav id="main-nav" class="mr-4 hidden md:block absolute top-full right-0 bg-blue-500 md:bg-transparent shadow-md md:shadow-none rounded-md md:rounded-none">
-            <ul class="flex flex-col md:flex-row space-x-0 md:space-x-4 p-4 md:p-0">
-                <li><a href="#home" class="hover:text-blue-300 no-underline block py-2 md:inline">Accueil</a></li>
+            <ul class="flex flex-col md:flex-row space-x-0 md:space-x-4 p-4 md:p-0 text-black ">
+                <li><a href="#home" class="hover:text-blue-300no-underline block py-2 md:inline">Accueil</a></li>
                 <li><a href="#products" class="hover:text-blue-300 no-underline block py-2 md:inline">Produits</a></li>
                 <li><a href="#about" class="hover:text-blue-300 no-underline block py-2 md:inline">À Propos</a></li>
                 <li><a href="#contact" class="hover:text-blue-300 no-underline block py-2 md:inline">Contact</a></li>
@@ -239,28 +239,6 @@
     </footer>
 
     <script>
-        const products = [
-            { 
-                id: 1, 
-                name: 'Drone Dji Mini 4 Pro Fly More Combo avec radiocommande Blanc', 
-                price: 999.99, 
-                description: 'Réalisez des prouesses avec Mini DJI Mini 4 Pro constitue notre mini drone caméra le plus perfectionné à ce jour. Il intègre de puissantes capacités d\'imaging, une détection d\'obstacles omnidirectionnelle, ActiveTrack 360° avec un nouveau mode de suivi, et une transmission vidéo FHD sur 20 km, pour le plus grand plaisir des pros comme des débutants.',
-                image: 'https://static.fnac-static.com/multimedia/Images/FR/MDM/c1/b1/52/22196673/3756-1/tsp20250314191927/Drone-Dji-Mini-4-Pro-Fly-More-Combo-avec-radiocommande-Blanc.jpg',
-                accessories: ['Batterie de Vol Intelligente : 2 590 mAh', 'Batterie de Vol Intelligente Plus : 3 850 mAh'],
-                customizations: [
-                    'Taille drone plié: 148 x 94 x 64 mm',
-                    'Taille drone déplié: 298 x 373 x 101 mm',
-                    'Couleur: Blanc',
-                    'Télécommande avec écran intégré'
-                ]
-            },
-            { id: 2, name: 'Produit 2', price: 19.99, description: 'Description du produit 2', image: 'https://placehold.co/300x200/EEE/31343C', accessories: ['Accessoire X'], customizations: ['Taille S', 'Taille M', 'Taille L'] },
-            { id: 3, name: 'Produit 3', price: 34.50, description: 'Description du produit 3', image: 'https://placehold.co/300x200/EEE/31343C', accessories: [], customizations: ['Design A', 'Design B', 'Design C'] },
-            { id: 4, name: 'Produit 4', price: 42.00, description: 'Description du produit 4', image: 'https://placehold.co/300x200/EEE/31343C', accessories: ['Accessoire 1', 'Accessoire 2', 'Accessoire 3'], customizations: [] },
-            { id: 5, name: 'Produit 5', price: 15.50, description: 'Description du produit 5', image: 'https://placehold.co/300x200/EEE/31343C', accessories: ['Accessoire Y', 'Accessoire Z'], customizations: ['Rouge', 'Vert', 'Bleu'] },
-            { id: 6, name: 'Produit 6', price: 29.99, description: 'Description du produit 6', image: 'https://placehold.co/300x200/EEE/31343C', accessories: [], customizations: ['Option 1', 'Option 2'] },
-        ];
-
         const productList = document.getElementById('product-list');
         const cartItemsContainer = document.getElementById('cart-items');
         const cartTotalElement = document.getElementById('cart-total');
@@ -273,62 +251,44 @@
 
         let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
+        let products = []; // Déclaration de la variable products
+
         function displayProducts() {
-            productList.innerHTML = '';
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'p-4', 'flex', 'flex-col', 'transition-transform', 'hover:scale-105', 'animate-fade-in');
-                productCard.innerHTML = `
-                    <div class="relative group">
-                        <img src="${product.image}" alt="${product.name}" class="rounded-md h-48 w-full object-cover mb-4">
-                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md flex items-center justify-center">
+            fetch('products.json')
+                .then(response => response.json())
+                .then(data => {
+                    products = data; // Assignation des données à la variable products
+                    productList.innerHTML = '';
+                    products.forEach(product => {
+                        const productCard = document.createElement('div');
+                        productCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'p-4', 'flex', 'flex-col', 'transition-transform', 'hover:scale-105', 'animate-fade-in');
+                        productCard.innerHTML = `
+                            <div class="relative group">
+                                <img src="${product.image}" alt="${product.name}" class="rounded-md h-48 w-full object-cover mb-4">
+                                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md flex items-center justify-center">
+                                    <button 
+                                        class="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-700"
+                                        onclick="showProductDetails(${product.id})"
+                                    >
+                                        Voir Détails
+                                    </button>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold text-blue-700 mb-2">${product.name}</h3>
+                            <p class="text-gray-600 mb-2 line-clamp-2">${product.description}</p>
+                            <p class="text-lg font-bold text-green-600 mb-4">${product.price.toFixed(2)} €</p>
                             <button 
-                                class="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-700"
-                                hx-get="/product/${product.id}"
-                                hx-target="#product-details-content"
-                                hx-trigger="click"
-                                onclick="showProductDetails(${product.id})"
+                                class="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 mt-auto"
+                                onclick="addToCart(${product.id})"
                             >
-                                Voir Détails
+                                Ajouter au panier
                             </button>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2">${product.name}</h3>
-                    <p class="text-gray-600 mb-2 line-clamp-2">${product.description}</p>
-                    <p class="text-lg font-bold text-green-600 mb-4">${product.price.toFixed(2)} €</p>
-                    <button 
-                        class="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 mt-auto"
-                        onclick="addToCart(${product.id})"
-                    >
-                        Ajouter au panier
-                    </button>
-                `;
-                productList.appendChild(productCard);
-            });
+                        `;
+                        productList.appendChild(productCard);
+                    });
+                })
+                .catch(error => console.error('Erreur lors du chargement des produits:', error));
         }
-
-        // Assurez-vous que la fonction est appelée au chargement de la page
-        document.addEventListener('DOMContentLoaded', () => {
-            displayProducts();
-            updateCartCount();
-
-            const menuToggle = document.getElementById('menu-toggle');
-            const mainNav = document.getElementById('main-nav');
-
-            menuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('hidden');
-                mainNav.classList.toggle('absolute'); // Ajout pour le positionnement
-            });
-
-            // Fermer la navigation au clic en dehors de la navigation
-            document.addEventListener('click', (event) => {
-                const isClickInsideMenu = mainNav.contains(event.target) || menuToggle.contains(event.target);
-                if (!isClickInsideMenu && !mainNav.classList.contains('hidden')) {
-                    mainNav.classList.add('hidden');
-                    mainNav.classList.remove('absolute');
-                }
-            });
-        });
 
         function showProductDetails(productId) {
             const product = products.find(p => p.id === productId);
@@ -399,9 +359,9 @@
                 displayCartItems();
                 showToast(`${product.name} a été ajouté au panier !`);
 
-                // Envoyer un email de notification d'ajout au panier
-                const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Produit ajouté au panier&body=Le produit ${encodeURIComponent(product.name)} a été ajouté au panier.`;
-                window.open(mailtoLink, '_blank');
+                // Supprimer l'envoi de mail de notification d'ajout au panier
+                // const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Produit ajouté au panier&body=Le produit ${encodeURIComponent(product.name)} a été ajouté au panier.`;
+                // window.open(mailtoLink, '_blank');
             }
         }
 
@@ -553,6 +513,23 @@ toast.classList.add('opacity-100', 'translate-x-0');
             displayProducts();
             updateCartCount();
             console.log("Produits affichés");
+
+            const menuToggle = document.getElementById('menu-toggle');
+            const mainNav = document.getElementById('main-nav');
+
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('hidden');
+                mainNav.classList.toggle('absolute'); // Ajout pour le positionnement
+            });
+
+            // Fermer la navigation au clic en dehors de la navigation
+            document.addEventListener('click', (event) => {
+                const isClickInsideMenu = mainNav.contains(event.target) || menuToggle.contains(event.target);
+                if (!isClickInsideMenu && !mainNav.classList.contains('hidden')) {
+                    mainNav.classList.add('hidden');
+                    mainNav.classList.remove('absolute');
+                }
+            });
         }
 
         // Make cart modal accessible via the cart icon
