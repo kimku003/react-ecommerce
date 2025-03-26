@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Superbe Site d'E-commerce</title>
+    <meta name="description" content="Boutique en ligne proposant des drones et accessoires de haute qualité">
+    <meta name="keywords" content="drone, DJI, accessoires drone, e-commerce, boutique en ligne">
+    <meta name="author" content="Mon E-commerce">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://votre-nom-github.github.io/ecom/" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -58,485 +65,37 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        /* Mode sombre */
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --text-primary: #ffffff;
+            --card-bg: #2d2d2d;
+        }
+        
+        /* Classes pour le zoom d'image */
+        .zoom-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .zoomed {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
-    <header class="bg-blue-500 text-white py-4 flex justify-between items-center lg:items-center shadow-md sticky top-0 z-10 rounded-md">
-        <div class="logo text-xl font-bold ml-4 animate-bounce">Mon E-commerce</div>
-        <button id="menu-toggle" class="mr-4 md:hidden focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
-        <nav id="main-nav" class="mr-4 hidden md:block absolute top-full right-0 bg-blue-500 md:bg-transparent shadow-md md:shadow-none rounded-md md:rounded-none">
-            <ul class="flex flex-col md:flex-row space-x-0 md:space-x-4 p-4 md:p-0 text-black ">
-                <li><a href="#home" class="hover:text-blue-300no-underline block py-2 md:inline">Accueil</a></li>
-                <li><a href="#products" class="hover:text-blue-300 no-underline block py-2 md:inline">Produits</a></li>
-                <li><a href="#about" class="hover:text-blue-300 no-underline block py-2 md:inline">À Propos</a></li>
-                <li><a href="#contact" class="hover:text-blue-300 no-underline block py-2 md:inline">Contact</a></li>
-                <li>
-                    <a href="#cart" class="flex items-center hover:text-blue-300 no-underline block py-2 md:inline">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        <span class="ml-1" id="cart-count">0</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<body class="bg-gray-100 transition-colors duration-200">
+    <div id="root"></div>
+    <script type="text/babel">
+        import App from './src/App';
 
-    <section id="home" class="container mx-auto py-10 flex flex-col md:flex-row items-center justify-around animate-fade-in">
-        <div class="text-center md:text-left">
-            <h1 class="text-3xl font-bold text-blue-700 mb-4">Bienvenue sur Mon E-commerce</h1>
-            <p class="text-gray-600 mb-8">Votre destination pour les meilleurs produits en ligne.</p>
-            <button onclick="window.location.href='#products'" class="bg-green-500 text-white py-3 px-6 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
-                Découvrez Nos Produits
-            </button>
-        </div>
-        <div class="mt-8 md:mt-0">
-            <img src="https://placehold.co/600x400/EEE/31343C" alt="Image d'accueil" class="rounded-lg shadow-lg animate-slide-in-right">
-        </div>
-    </section>
-
-    <section id="products" class="container mx-auto py-10">
-        <h2 class="text-2xl font-bold text-center text-blue-700 mb-8 animate-fade-in">Nos Produits Vedettes</h2>
-        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            </div>
-    </section>
-
-    <section id="product-details" class="container mx-auto py-10 hidden">
-        <h2 class="text-2xl font-bold text-center text-blue-700 mb-8 animate-fade-in">Détails du Produit</h2>
-        <div id="product-details-content" class="bg-white rounded-lg shadow-md p-6">
-        </div>
-    </section>
-
-    <section id="about" class="bg-blue-100 py-10 rounded-md">
-        <div class="container mx-auto text-center animate-fade-in">
-            <h2 class="text-2xl font-bold text-blue-700 mb-8">À Propos de Nous</h2>
-            <p class="text-gray-700 text-lg">
-                Nous sommes une équipe passionnée dédiée à vous offrir la meilleure expérience d'achat en ligne.
-                Avec des années d'expérience dans l'industrie, nous comprenons vos besoins et nous nous efforçons
-                de vous fournir des produits de qualité supérieure et un service client exceptionnel.
-            </p>
-            <div class="mt-8 flex justify-center">
-                <img src="https://placehold.co/400x300/EEE/31343C" alt="À propos de nous" class="rounded-lg shadow-lg animate-slide-in-left">
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="container mx-auto py-10">
-        <h2 class="text-2xl font-bold text-center text-blue-700 mb-8 animate-fade-in">Contactez-Nous</h2>
-        <div class="bg-white rounded-lg shadow-md p-8 max-w-md mx-auto animate-slide-in-right">
-            <form id="contact-form" class="space-y-6">
-                <div>
-                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nom:</label>
-                    <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    <div id="name-error" class="text-red-500 text-xs italic" style="display: none;"></div>
-                </div>
-                <div>
-                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                    <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    <div id="email-error" class="text-red-500 text-xs italic" style="display: none;"></div>
-                </div>
-                <div>
-                    <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message:</label>
-                    <textarea id="message" name="message" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32 resize-y" required></textarea>
-                    <div id="message-error" class="text-red-500 text-xs italic" style="display: none;"></div>
-                </div>
-                <button type="submit" class="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 w-full">
-                    Envoyer Message
-                </button>
-            </form>
-            <div id="message-sent" class="mt-6 text-green-600 text-center font-semibold" style="display: none;">
-                Message envoyé avec succès!
-            </div>
-            <div class="text-center mb-4">
-                <p class="text-gray-600">Contactez-nous : 
-                    <a href="mailto:gisaper741@sendesco.com" class="text-blue-600 hover:text-blue-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    </a>
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <div id="cart-modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 relative">
-                    <button type="button" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="toggleCartModal()">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    <div class="sm:flex sm:items-start">
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h2 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                Votre Panier
-                            </h2>
-                            <div id="cart-items" class="mt-2">
-                                </div>
-                            <div id="cart-total" class="mt-4 font-bold text-xl text-right">
-                                Total: 0.00 €
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="clearCart()">
-                        Vider le panier
-                    </button>
-                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="toggleCartModal()">
-                        Continuer mes achats
-                    </button>
-                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="checkout()">
-                        Commander
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="payment-modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
-                                Instructions de Paiement
-                            </h3>
-                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                                <p class="text-sm text-gray-600 mb-2">Pour finaliser votre commande, veuillez effectuer un virement bancaire avec les informations suivantes :</p>
-                                <div class="space-y-2">
-                                    <p class="font-mono bg-white p-2 rounded border select-all">IBAN: IT55X3608003200000000020604</p>
-                                    <p class="font-mono bg-white p-2 rounded border select-all">BIC: NIPTITP1XXX</p>
-                                    <p class="font-bold mt-2">Montant: <span id="payment-amount"></span></p>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-4">Important: Incluez votre numéro de commande <span id="order-reference" class="font-bold"></span> dans la référence du virement.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="closePaymentModal()">
-                        Fermer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="bg-gray-800 text-white py-4 text-center rounded-md">
-        <p>© 2024 Mon Superbe Site d'E-commerce. Tous droits réservés.</p>
-    </footer>
-
-    <script>
-        const productList = document.getElementById('product-list');
-        const cartItemsContainer = document.getElementById('cart-items');
-        const cartTotalElement = document.getElementById('cart-total');
-        const cartCountElement = document.getElementById('cart-count');
-        const cartModal = document.getElementById('cart-modal');
-        const contactForm = document.getElementById('contact-form');
-        const messageSent = document.getElementById('message-sent');
-        const productDetailsSection = document.getElementById('product-details');
-        const productDetailsContent = document.getElementById('product-details-content');
-
-        let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-
-        let products = []; // Déclaration de la variable products
-
-        function displayProducts() {
-            fetch('products.json')
-                .then(response => response.json())
-                .then(data => {
-                    products = data; // Assignation des données à la variable products
-                    productList.innerHTML = '';
-                    products.forEach(product => {
-                        const productCard = document.createElement('div');
-                        productCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'p-4', 'flex', 'flex-col', 'transition-transform', 'hover:scale-105', 'animate-fade-in');
-                        productCard.innerHTML = `
-                            <div class="relative group">
-                                <img src="${product.image}" alt="${product.name}" class="rounded-md h-48 w-full object-cover mb-4">
-                                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md flex items-center justify-center">
-                                    <button 
-                                        class="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-700"
-                                        onclick="showProductDetails(${product.id})"
-                                    >
-                                        Voir Détails
-                                    </button>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold text-blue-700 mb-2">${product.name}</h3>
-                            <p class="text-gray-600 mb-2 line-clamp-2">${product.description}</p>
-                            <p class="text-lg font-bold text-green-600 mb-4">${product.price.toFixed(2)} €</p>
-                            <button 
-                                class="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 mt-auto"
-                                onclick="addToCart(${product.id})"
-                            >
-                                Ajouter au panier
-                            </button>
-                        `;
-                        productList.appendChild(productCard);
-                    });
-                })
-                .catch(error => console.error('Erreur lors du chargement des produits:', error));
-        }
-
-        function showProductDetails(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                const detailsHTML = `
-                    <div class="container mx-auto py-10 flex flex-col md:flex-row items-start justify-center gap-8 animate-fade-in">
-                        <div class="md:w-1/2">
-                            <img src="${product.image}" alt="${product.name}" class="rounded-lg shadow-lg w-full">
-                        </div>
-                        <div class="md:w-1/2">
-                            <h1 class="text-3xl font-bold text-blue-700 mb-4">${product.name}</h1>
-                            <p class="text-gray-600 text-lg mb-4">${product.description}</p>
-                            <p class="text-2xl font-bold text-green-600 mb-6">Prix: ${product.price.toFixed(2)} €</p>
-
-                            ${product.accessories && product.accessories.length > 0 ? `
-                                <div class="mb-6">
-                                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Accessoires:</h3>
-                                    <ul class="list-disc list-inside">
-                                        ${product.accessories.map(acc => `<li>${acc}</li>`).join('')}
-                                    </ul>
-                                </div>
-                            ` : ''}
-
-                            ${product.customizations && product.customizations.length > 0 ? `
-                                <div class="mb-6">
-                                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Personnalisations:</h3>
-                                    <ul class="list-disc list-inside">
-                                        ${product.customizations.map(cust => `<li>${cust}</li>`).join('')}
-                                    </ul>
-                                </div>
-                            ` : ''}
-
-                            <button class="bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" onclick="addToCart(${product.id})">
-                                Ajouter au panier
-                            </button>
-                            <button class="mt-4 bg-gray-300 text-gray-700 py-3 px-6 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75" onclick="hideProductDetails()">
-                                Retour aux produits
-                            </button>
-                        </div>
-                    </div>
-                `;
-                productDetailsContent.innerHTML = detailsHTML;
-                productDetailsSection.classList.remove('hidden');
-                document.getElementById("products").classList.add('hidden');
-
-            } else {
-                productDetailsContent.innerHTML = '<p class="text-red-500 text-center py-8">Produit non trouvé.</p>';
-            }
-        }
-
-        function hideProductDetails() {
-            productDetailsSection.classList.add('hidden');
-            document.getElementById("products").classList.remove('hidden');
-            productDetailsContent.innerHTML = '';
-        }
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                const existingItem = cart.find(item => item.product.id === productId);
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({ product, quantity: 1 });
-                }
-                saveCart();
-                updateCartCount();
-                displayCartItems();
-                showToast(`${product.name} a été ajouté au panier !`);
-
-                // Supprimer l'envoi de mail de notification d'ajout au panier
-                // const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Produit ajouté au panier&body=Le produit ${encodeURIComponent(product.name)} a été ajouté au panier.`;
-                // window.open(mailtoLink, '_blank');
-            }
-        }
-
-        function displayCartItems() {
-            cartItemsContainer.innerHTML = '';
-            let total = 0;
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Votre panier est vide.</p>';
-                cartTotalElement.textContent = 'Total: 0.00 €';
-                return;
-            }
-            cart.forEach(item => {
-                const cartItem = document.createElement('div');
-                cartItem.classList.add('flex', 'justify-between', 'items-center', 'py-2', 'border-b', 'border-gray-200');
-                cartItem.innerHTML = `
-                    <div>
-                        <h4 class="font-semibold text-blue-700">${item.product.name}</h4>
-                        <p class="text-gray-600 text-sm">Quantité: ${item.quantity}</p>
-                    </div>
-                    <p class="text-lg font-bold text-green-600">${(item.product.price * item.quantity).toFixed(2)} €</p>
-                     <button class="text-red-500 hover:text-red-700 focus:outline-none" onclick="removeFromCart(${item.product.id})">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                    </button>
-                `;
-                cartItemsContainer.appendChild(cartItem);
-                total += item.product.price * item.quantity;
-            });
-            cartTotalElement.textContent = `Total: ${total.toFixed(2)} €`;
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.product.id !== productId);
-            saveCart();
-            updateCartCount();
-            displayCartItems();
-            showToast('Produit retiré du panier !');
-        }
-
-        function clearCart() {
-            cart = [];
-            saveCart();
-            updateCartCount();
-            displayCartItems();
-            showToast('Panier vidé !');
-            window.location.href = '#home'; // Rediriger vers la page d'accueil
-        }
-
-        function updateCartCount() {
-            let count = cart.reduce((total, item) => total + item.quantity, 0);
-            cartCountElement.textContent = count;
-        }
-
-        function toggleCartModal() {
-            cartModal.classList.toggle('hidden');
-            if (!cartModal.classList.contains('hidden')) {
-                displayCartItems();
-            }
-        }
-
-        function checkout() {
-            if (cart.length > 0) {
-                const orderReference = generateOrderReference();
-                const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-                
-                document.getElementById('payment-amount').textContent = `${total.toFixed(2)} €`;
-                document.getElementById('order-reference').textContent = orderReference;
-                
-                // Envoyer l'email de notification de commande
-                const orderDetails = cart.map(item => 
-                    `${item.product.name} x${item.quantity} - ${(item.product.price * item.quantity).toFixed(2)}€`
-                ).join('\n');
-
-                const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Nouvelle Commande ${orderReference}&body=Nouvelle commande reçue:%0D%0A%0D%0ARéférence: ${orderReference}%0D%0ATotal: ${total.toFixed(2)}€%0D%0A%0D%0ADétails de la commande:%0D%0A${encodeURIComponent(orderDetails)}`;
-                
-                window.open(mailtoLink, '_blank');
-                
-                togglePaymentModal();
-                clearCart();
-            } else {
-                alert('Votre panier est vide !');
-            }
-        }
-
-        function generateOrderReference() {
-            const date = new Date();
-            const random = Math.floor(Math.random() * 10000);
-            return `CMD${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${random}`;
-        }
-
-        function togglePaymentModal() {
-            const modal = document.getElementById('payment-modal');
-            modal.classList.toggle('hidden');
-        }
-
-        function closePaymentModal() {
-            document.getElementById('payment-modal').classList.add('hidden');
-        }
-
-        function saveCart() {
-            sessionStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.classList.add('fixed', 'bottom-4', 'right-4', 'bg-green-500', 'text-white', 'py-2', 'px-4', 'rounded-md', 'shadow-lg', 'opacity-0', 'transition-opacity', 'duration-300', 'animate-slide-in-right');
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.remove('opacity-0', 'translate-x-4');
-toast.classList.add('opacity-100', 'translate-x-0');
-                setTimeout(() => {
-                    toast.classList.remove('opacity-100', 'translate-x-0');
-                    toast.classList.add('opacity-0', 'translate-x-4');
-                    setTimeout(() => toast.remove(), 300); // Remove after the fade out
-                }, 2000); // Display for 2 seconds
-            }, 10); // Small delay to ensure 
-        }
-
-        // Form validation
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            if (validateForm()) {
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const message = document.getElementById('message').value;
-
-                const mailtoLink = `mailto:gisaper741@sendesco.com?subject=Contact de ${encodeURIComponent(name)}&body=De: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(message)}`;
-                
-                window.open(mailtoLink, '_blank');
-                
-                messageSent.style.display = 'block';
-                contactForm.reset();
-                setTimeout(() => {
-                    messageSent.style.display = 'none';
-                }, 3000);
-            }
-        });
-
-        function validateForm() {
-            let hasErrors = false;
-            // ...existing validation code...
-            return !hasErrors;
-        }
-
-        // Initial setup
-        window.onload = function() {
-            console.log("Chargement de la page");
-            displayProducts();
-            updateCartCount();
-            console.log("Produits affichés");
-
-            const menuToggle = document.getElementById('menu-toggle');
-            const mainNav = document.getElementById('main-nav');
-
-            menuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('hidden');
-                mainNav.classList.toggle('absolute'); // Ajout pour le positionnement
-            });
-
-            // Fermer la navigation au clic en dehors de la navigation
-            document.addEventListener('click', (event) => {
-                const isClickInsideMenu = mainNav.contains(event.target) || menuToggle.contains(event.target);
-                if (!isClickInsideMenu && !mainNav.classList.contains('hidden')) {
-                    mainNav.classList.add('hidden');
-                    mainNav.classList.remove('absolute');
-                }
-            });
-        }
-
-        // Make cart modal accessible via the cart icon
-        document.querySelector('a[href="#cart"]').addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent the default anchor behavior
-            toggleCartModal(); // Open the cart modal
-        });
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
