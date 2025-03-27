@@ -8,6 +8,8 @@ import Contact from './components/Contact';
 import Cart from './components/Cart';
 import ProductDetail from './components/ProductDetail';
 import Auth from './components/Auth';
+import Admin from './components/Admin';
+import AdminDashboard from './components/AdminDashboard';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
 
@@ -27,6 +29,8 @@ const App = () => {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/auth" element={<Auth />} />
+                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     </Routes>
                     <footer className="bg-gray-800 text-white py-4 text-center rounded-md">
                         <p>© 2024 Mon Superbe Site d'E-commerce. Tous droits réservés.</p>

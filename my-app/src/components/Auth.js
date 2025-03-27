@@ -11,9 +11,9 @@ const Auth = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulation d'une API d'authentification
+        // Simulation d'une API d'authentification avec vérification du mot de passe
         if (email && password) {
-            login({ email });
+            login({ email, password });
             navigate('/');
         }
     };

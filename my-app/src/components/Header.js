@@ -74,6 +74,17 @@ const Header = () => {
                                 <span id="cart-count">0</span>
                             </Link>
                         </li>
+                        {user && user.isAdmin && (
+                            <li>
+                                <Link
+                                    to="/admin/dashboard"
+                                    className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Administration
+                                </Link>
+                            </li>
+                        )}
                     </ul>
                 </nav>
                 <div className="flex items-center gap-4">
