@@ -1,0 +1,20 @@
+[
+    {
+        "model": "api.category",
+        "pk": 1,
+        "fields": {
+            "name": "Électroniques",
+            "description": "Drones, caméras et autres appareils électroniques",
+            "slug": "electroniques"
+        }
+    },
+    {
+        "model": "api.category",
+        "pk": 2,
+        "fields": {
+            "name": "Informatiques",
+            "description": "Ordinateurs, périphériques et accessoires informatiques",
+            "slug": "informatiques"
+        }
+    }
+]

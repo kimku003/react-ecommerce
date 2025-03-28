@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './components/Home';
@@ -14,7 +14,14 @@ import { AuthProvider } from './context/AuthContext';
 import './App.css';
 
 const App = () => {
-    const [products] = useState([/* ...your products data... */]);
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8000/api/products/')
+            .then(response => response.json())
+            .then(data => setProducts(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
 
     return (
         <AuthProvider>

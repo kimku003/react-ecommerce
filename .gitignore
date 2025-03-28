@@ -1,0 +1,43 @@
+# Environnements virtuels
+.venv/
+env/
+venv/
+
+# Fichiers Python compilés
+*.pyc
+*.pyo
+__pycache__/
+
+# Fichiers de configuration locaux
+*.env
+*.local
+.env
+
+# Base de données SQLite
+db.sqlite3
+
+# Dossiers de médias et statiques générés
+/media/
+static/
+
+# Fichiers de logs
+*.log
+logs/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build React
+my-app/build/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# IDE/Éditeurs
+.vscode/
+.idea/
+*.swp
