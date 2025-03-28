@@ -2,10 +2,19 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
+from .managers import CustomUserManager
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(_('email address'), unique=True)
     phone = models.CharField(max_length=15, blank=True)
     address = models.TextField(blank=True)
+    email_verified = models.BooleanField(default=False)
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []  # email est déjà requis par défaut
+    
+    objects = CustomUserManager()
     
     # Ajout des related_name pour résoudre les conflits
     groups = models.ManyToManyField(
@@ -23,6 +32,9 @@ class CustomUser(AbstractUser):
         related_name='custom_user_set'
     )
     
+    def __str__(self):
+        return self.email
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)

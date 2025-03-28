@@ -1,20 +1,49 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
+    const [error, setError] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulation d'une API d'authentification avec vérification du mot de passe
-        if (email && password) {
-            login({ email, password });
-            navigate('/');
+        setError('');
+        
+        try {
+            if (!isLogin) {
+                console.log('Tentative d\'inscription avec:', { email });
+                const response = await authService.register(email, password, password2);
+                console.log('Réponse inscription:', response);
+                
+                if (response.message.includes('existe déjà')) {
+                    setError('Un compte existe déjà avec cet email. Veuillez vous connecter.');
+                    setIsLogin(true);
+                    return;
+                }
+                
+                // Si l'inscription réussit, l'utilisateur est déjà connecté
+                login({ email: response.email });
+                navigate('/');
+            } else {
+                console.log('Tentative de connexion avec:', { email });
+                const response = await authService.login(email, password);
+                console.log('Réponse connexion:', response);
+                
+                if (response.message === "Connexion réussie") {
+                    login({ email: response.email });
+                    navigate('/');
+                }
+            }
+        } catch (err) {
+            console.error('Erreur:', err);
+            setError(err.message || 'Une erreur est survenue');
         }
     };
 
@@ -26,6 +55,11 @@ const Auth = () => {
                         {isLogin ? 'Connexion' : 'Inscription'}
                     </h2>
                 </div>
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
@@ -42,12 +76,24 @@ const Auth = () => {
                             <input
                                 type="password"
                                 required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Mot de passe"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                        {!isLogin && (
+                            <div>
+                                <input
+                                    type="password"
+                                    required
+                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                    placeholder="Confirmer le mot de passe"
+                                    value={password2}
+                                    onChange={(e) => setPassword2(e.target.value)}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div>
