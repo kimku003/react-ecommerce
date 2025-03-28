@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -34,6 +34,11 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    
+    <!-- Ajout du CSS et JS de Snipcart -->
+    <link rel="preconnect" href="https://app.snipcart.com">
+    <link rel="preconnect" href="https://cdn.snipcart.com">
+    <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.2.0/default/snipcart.css" />
 </head>
 <body class="bg-gray-100">
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -48,5 +53,9 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    
+    <!-- Ajout du script Snipcart -->
+    <script async src="https://cdn.snipcart.com/themes/v3.2.0/default/snipcart.js"></script>
+    <div hidden id="snipcart" data-api-key="VOTRE_CLE_API_SNIPCART"></div>
 </body>
 </html>
