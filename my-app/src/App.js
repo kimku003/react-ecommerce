@@ -11,6 +11,7 @@ import Auth from './components/Auth';
 import Admin from './components/Admin';
 import AdminDashboard from './components/AdminDashboard';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 import './App.css';
 
 const App = () => {
@@ -25,25 +26,27 @@ const App = () => {
 
     return (
         <AuthProvider>
-            <Router>
-                <div className="bg-gray-100 min-h-screen">
-                    <Header />
-                    <Routes>
-                        <Route path="/" exact element={<Home />} />
-                        <Route path="/products" element={<Products />} />
-                        <Route path="/product/:id" element={<ProductDetail products={products} />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                    </Routes>
-                    <footer className="bg-gray-800 text-white py-4 text-center rounded-md">
-                        <p>© 2024 Mon Superbe Site d'E-commerce. Tous droits réservés.</p>
-                    </footer>
-                </div>
-            </Router>
+            <CartProvider>
+                <Router>
+                    <div className="bg-gray-100 min-h-screen">
+                        <Header />
+                        <Routes>
+                            <Route path="/" exact element={<Home />} />
+                            <Route path="/products" element={<Products />} />
+                            <Route path="/product/:id" element={<ProductDetail products={products} />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/auth" element={<Auth />} />
+                            <Route path="/admin" element={<Admin />} />
+                            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                        </Routes>
+                        <footer className="bg-gray-800 text-white py-4 text-center rounded-md">
+                            <p>© 2024 Mon Superbe Site d'E-commerce. Tous droits réservés.</p>
+                        </footer>
+                    </div>
+                </Router>
+            </CartProvider>
         </AuthProvider>
     );
 };
