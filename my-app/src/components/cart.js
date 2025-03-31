@@ -31,13 +31,19 @@ const Cart = () => {
                             </div>
                         </div>
                         <div className="flex items-center space-x-4">
-                            <input
-                                type="number"
-                                min="1"
-                                value={item.quantity}
-                                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
-                                className="w-16 px-2 py-1 border rounded"
-                            />
+                            <button 
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="px-2 py-1 bg-gray-200 rounded"
+                            >
+                                -
+                            </button>
+                            <span>{item.quantity}</span>
+                            <button 
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="px-2 py-1 bg-gray-200 rounded"
+                            >
+                                +
+                            </button>
                             <button
                                 onClick={() => removeFromCart(item.id)}
                                 className="text-red-500 hover:text-red-700"

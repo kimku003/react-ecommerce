@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, logout } = useAuth();
+    const { cartCount } = useCart();
 
     // Empêcher le défilement du body quand le menu est ouvert
     useEffect(() => {
@@ -71,7 +73,7 @@ const Header = () => {
                                     <path d="M3 6h18"/>
                                     <path d="M16 10a4 4 0 0 1-8 0"/>
                                 </svg>
-                                <span id="cart-count">0</span>
+                                <span id="cart-count">{cartCount}</span>
                             </Link>
                         </li>
                         {user && user.isAdmin && (
