@@ -10,6 +10,7 @@ from .models import Product, Category, Order
 from .serializers import ProductSerializer, CategorySerializer, UserRegistrationSerializer, UserLoginSerializer, OrderSerializer
 import stripe
 from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -102,8 +103,18 @@ class AuthViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def logout(self, request):
+        if request.user.is_authenticated:
+            # Supprimer le panier en cours
+            Cart.objects.filter(user=request.user).delete()
+            
+            # Invalider le token si vous utilisez des tokens
+            if hasattr(request.user, 'auth_token'):
+                request.user.auth_token.delete()
+            
+            # Autres nettoyages nécessaires...
+
         logout(request)
-        return Response({"message": "Déconnexion réussie"})
+        return Response({"message": "Déconnexion réussie"}, status=status.HTTP_200_OK)
 
 class PaymentViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
@@ -147,6 +158,51 @@ class PaymentViewSet(viewsets.ViewSet):
             'status': order.status,
             'payment_intent': order.payment_intent.status if order.payment_intent else None
         })
+
+class CartViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['GET'])
+    def current(self, request):
+        # Récupérer ou créer le panier de l'utilisateur
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        
+        # Si le panier vient d'être créé, vérifier s'il y a des items en attente
+        if created:
+            pending_items = request.session.get('pending_cart_items', [])
+            for item in pending_items:
+                CartItem.objects.create(
+                    cart=cart,
+                    product_id=item['product_id'],
+                    quantity=item['quantity']
+                )
+            request.session['pending_cart_items'] = []
+        
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['POST'])
+    def add_item(self, request):
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        product_id = request.data.get('product_id')
+        quantity = request.data.get('quantity', 1)
+
+        try:
+            cart_item, created = CartItem.objects.get_or_create(
+                cart=cart,
+                product_id=product_id,
+                defaults={'quantity': quantity}
+            )
+            if not created:
+                cart_item.quantity += quantity
+                cart_item.save()
+
+            return Response({'status': 'success'})
+        except Product.DoesNotExist:
+            return Response(
+                {'error': 'Product not found'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 @api_view(['POST'])
 def create_payment_intent(request):

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Category, Product, Order, OrderItem
+from .models import CustomUser, Category, Product, Order, OrderItem, CartItem, Cart
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
@@ -87,3 +87,15 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'total_amount', 'status', 'created_at']
+
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'quantity', 'added_at']
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'items', 'created_at', 'updated_at']
