@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # Providers sociaux optionnels
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'djstripe',
 ]
 
 MIDDLEWARE = [
@@ -203,3 +204,18 @@ AUTHENTICATION_BACKENDS = [
 
 # Spécifier le backend par défaut
 DEFAULT_AUTHENTICATION_BACKEND = 'django.contrib.auth.backends.ModelBackend'
+
+# Configuration Stripe
+STRIPE_LIVE_MODE = False
+STRIPE_TEST_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+STRIPE_TEST_SECRET_KEY = config('STRIPE_SECRET_KEY')
+
+# Utilisez ces variables pour dj-stripe
+STRIPE_PUBLIC_KEY = STRIPE_TEST_PUBLIC_KEY
+STRIPE_SECRET_KEY = STRIPE_TEST_SECRET_KEY
+
+# Pour le développement local avec Stripe CLI
+DJSTRIPE_WEBHOOK_SECRET = config('DJSTRIPE_WEBHOOK_SECRET', default="whsec_test")
+DJSTRIPE_WEBHOOK_URL = "webhook/"
+
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"

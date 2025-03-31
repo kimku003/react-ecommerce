@@ -8,9 +8,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'stock', 'category']
-    list_filter = ['category']
-    search_fields = ['name', 'description']
+    list_display = ('name', 'price', 'stock', 'category')
+    search_fields = ('name', 'description')
+    list_filter = ('category',)
+    fields = ('category', 'name', 'description', 'price', 'stock', 'image', 'image_url')
+
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ['email', 'first_name', 'last_name', 'is_staff', 'is_active']

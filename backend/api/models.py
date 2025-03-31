@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
+from djstripe.models import Customer, PaymentIntent
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -38,26 +39,38 @@ class CustomUser(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name)
+            self.slug = base_slug
+            n = 0
+            while Category.objects.filter(slug=self.slug).exists():
+                n += 1
+                self.slug = f'{base_slug}-{n}'
         super().save(*args, **kwargs)
-    
-    def __str__(self):
-        return self.name
     
     class Meta:
         verbose_name_plural = "Categories"
+    
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(
+        Category, 
+        on_delete=models.SET_NULL,  # Au lieu de CASCADE
+        related_name='products',
+        null=True,  # Permet une valeur nulle
+        blank=True  # Permet de laisser le champ vide dans le formulaire
+    )
     name = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(default=0)
     image = models.ImageField(upload_to='products/', null=True, blank=True)
+    image_url = models.URLField(max_length=2000, null=True, blank=True, verbose_name="URL de l'image")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -65,22 +78,27 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
+    PENDING = 'P'
+    COMPLETED = 'C'
+    FAILED = 'F'
+    
     STATUS_CHOICES = [
-        ('pending', 'En attente'),
-        ('confirmed', 'Confirmée'),
-        ('shipped', 'Expédiée'),
-        ('delivered', 'Livrée'),
-        ('cancelled', 'Annulée'),
+        (PENDING, 'En attente'),
+        (COMPLETED, 'Complété'),
+        (FAILED, 'Échoué'),
     ]
     
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    # Commentons temporairement ces lignes
+    # stripe_customer = models.ForeignKey(Customer, null=True, on_delete=models.SET_NULL)
+    # payment_intent = models.ForeignKey(PaymentIntent, null=True, on_delete=models.SET_NULL)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Commande #{self.id} - {self.user.username}"
+        return f"Commande {self.id} - {self.user.email}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -90,3 +108,6 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.product.name}"
+
+
+

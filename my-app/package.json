@@ -9,11 +9,16 @@
     "@testing-library/user-event": "^13.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "@stripe/stripe-js": "^6.1.0",
+    "@stripe/react-stripe-js": "^3.5.1",
     "react-router-dom": "^7.4.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
     "@strapi/client": "^4.15.0",
     "axios": "^1.6.0"
+  },
+  "resolutions": {
+    "@strapi/client": "4.14.0"
   },
   "scripts": {
     "start": "react-scripts start",

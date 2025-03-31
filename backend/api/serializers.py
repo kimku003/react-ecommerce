@@ -82,3 +82,8 @@ class UserLoginSerializer(serializers.Serializer):
         
         data['user'] = user
         return data
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['id', 'total_amount', 'status', 'created_at']
